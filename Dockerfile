@@ -15,7 +15,8 @@ RUN mkdir -p pistache && cd pistache; \
     cd pistache_src && git reset --hard $PISTACHE_COMMIT ;\
     mkdir build && cd build;\
     cmake cmake -DPISTACHE_USE_SSL=On ../ ;\
-    cmake --build . --parallel --target install
+    cmake --build . --parallel --target install ;\
+    ldconfig
 
 # packages for pytest setup
 RUN apt-get update && apt-get install -y \
