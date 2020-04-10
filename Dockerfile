@@ -27,8 +27,10 @@ RUN apt-get update && apt-get install -y \
     python3-urllib3 python-urllib3 \
     python3-setuptools python-setuptools\
     python3-dateutil python-dateutil \
-    python3-six python-six
-    
+    python3-six python-six \
+    python3-requests python-requests \
+    python3-git \
+
 # back to normal user
 USER builduser
 WORKDIR /home/builduser
