@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y \
     python3-dateutil python-dateutil \
     python3-six python-six \
     python3-requests python-requests \
-    python3-git \
+    python3-git
 
 # back to normal user
 USER builduser
