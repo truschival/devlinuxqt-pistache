@@ -20,6 +20,7 @@ RUN mkdir -p pistache && cd pistache; \
 
 # packages for pytest setup
 RUN apt-get update && apt-get install -y \
+    python3-pip python-pip \
     python3-pytest python-pytest \
     python3-pytest-cov python3-pytest-timeout \
     python3-pytest-runner python-pytest-runner \
