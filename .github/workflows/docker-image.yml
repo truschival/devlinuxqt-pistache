@@ -2,9 +2,8 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    tags:
+      - 'v*'
 
 env:
   REGISTRY: ghcr.io
@@ -17,6 +16,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Log in to the Container registry
+      id: login
+      uses: docker/login-action@v1.12.0
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.PACKAGE_PUSH }}
+      
     - name: Docker Metadata action
       id: meta
       uses: docker/metadata-action@v3.6.2

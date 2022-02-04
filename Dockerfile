@@ -1,4 +1,4 @@
-FROM ruschi/devlinuxqtquick2:latest
+FROM ghcr.io/truschival/devlinuxqtquick2:v11.2.0-1
 MAINTAINER Thomas Ruschival <t.ruschival@gmail.com>
 
 # Setup language environment and encoding
@@ -20,17 +20,19 @@ RUN mkdir -p pistache && cd pistache; \
 
 # packages for pytest setup
 RUN apt-get update && apt-get install -y \
-    python3-pip python-pip \
-    python3-pytest python-pytest \
-    python3-pytest-cov python3-pytest-timeout \
-    python3-pytest-runner python-pytest-runner \
-    python3-certifi python-certifi\
-    python3-urllib3 python-urllib3 \
-    python3-setuptools python-setuptools\
-    python3-dateutil python-dateutil \
-    python3-six python-six \
-    python3-requests python-requests \
-    python3-git
+    python3-certifi  \
+    python3-dateutil  \
+    python3-git \
+    python3-pip \
+    python3-pytest \
+    python3-pytest-cov \
+    python3-pytest-runner \
+    python3-pytest-timeout \
+    python3-requests \
+    python3-setuptools \
+    python3-six  \
+    python3-urllib3  \
+    python-pytest-runner
 
 # back to normal user
 USER builduser
