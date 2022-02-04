@@ -32,7 +32,7 @@ RUN apt-get update && apt-get install -y \
     python3-setuptools \
     python3-six  \
     python3-urllib3  \
-    python-pytest-runner
+    python3-pytest-runner
 
 # back to normal user
 USER builduser
