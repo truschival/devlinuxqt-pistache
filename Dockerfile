@@ -4,22 +4,15 @@ MAINTAINER Thomas Ruschival <t.ruschival@gmail.com>
 # Setup language environment and encoding
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
-ENV PISTACHE_COMMIT 73f248acd6db4c53
+ENV PISTACHE_COMMIT 3ec9d7c4f8b828fdd391550fff81b01e72dd6269
 
 # Install stuff as root
 USER root
 
-# Build and install pistache - we don't have a Debian package :(
-RUN mkdir -p pistache && cd pistache; \
-    git clone https://github.com/oktal/pistache.git pistache_src ;\
-    cd pistache_src && git reset --hard $PISTACHE_COMMIT ;\
-    mkdir build && cd build;\
-    cmake cmake -DPISTACHE_USE_SSL=On ../ ;\
-    cmake --build . --parallel --target install ;\
-    ldconfig
-
 # packages for pytest setup
+# pistache builds better with meson in recent releases
 RUN apt-get update && apt-get install -y \
+    meson \
     python3-certifi  \
     python3-dateutil  \
     python3-git \
@@ -33,6 +26,20 @@ RUN apt-get update && apt-get install -y \
     python3-six  \
     python3-urllib3  \
     python3-pytest-runner
+
+# Build and install pistache - we don't have a Debian package :(
+RUN mkdir -p pistache && cd pistache; \
+    git clone https://github.com/oktal/pistache.git pistache_src ;\
+    cd pistache_src; \
+    meson setup build \
+      --buildtype=release \
+      -DPISTACHE_USE_SSL=true \
+      -DPISTACHE_BUILD_EXAMPLES=false \
+      -DPISTACHE_BUILD_TESTS=false \
+      -DPISTACHE_BUILD_DOCS=false;\
+    meson compile -C build;\
+    meson install -C build;\
+    ldconfig
 
 # back to normal user
 USER builduser
