@@ -1,10 +1,10 @@
-FROM ghcr.io/truschival/devlinuxqtquick2:v11.2.0-1
+FROM ghcr.io/truschival/devlinuxqtquick2:v11.6
 MAINTAINER Thomas Ruschival <t.ruschival@gmail.com>
 
 # Setup language environment and encoding
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
-ENV PISTACHE_COMMIT 3ec9d7c4f8b828fdd391550fff81b01e72dd6269
+ENV PISTACHE_COMMIT ce251dfe8cd551380466f75bce79f3fdea5983f7
 
 # Install stuff as root
 USER root
@@ -31,6 +31,7 @@ RUN apt-get update && apt-get install -y \
 RUN mkdir -p pistache && cd pistache; \
     git clone https://github.com/oktal/pistache.git pistache_src ;\
     cd pistache_src; \
+	git checkout $PISTACHE_COMMIT; \
     meson setup build \
       --buildtype=release \
       -DPISTACHE_USE_SSL=true \
