@@ -2,39 +2,47 @@ name: Docker Image CI
 
 on:
   push:
+    branches:
+      - master
+      - 'feature/**'
     tags:
       - 'v*'
+  pull_request:
+    branches:
+      - master
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Log in to the Container registry
-      id: login
-      uses: docker/login-action@v1.12.0
-      with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ github.actor }}
-        password: ${{ secrets.PACKAGE_PUSH }}
-      
-    - name: Docker Metadata action
-      id: meta
-      uses: docker/metadata-action@v3.6.2
-      with:
-        # List of Docker images to use as base name for tags
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Log in to the Container registry
+        id: login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.PACKAGE_PUSH || secrets.GITHUB_TOKEN }}
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v2.9.0
-      with:
-        context: .
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}    
+      - name: Docker Metadata action
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
