@@ -1,9 +1,10 @@
-Container for QT5/QML applications with libpistache-C++ and python3.
+# devlinuxqt-pistache
 
-Container is based on 
-[ruschi/devlinuxqtquick2:latest](https://hub.docker.com/repository/docker/ruschi/devlinuxqtquick2)
-and [ruschi/devbusterbase](https://hub.docker.com/repository/docker/ruschi/devbusterbase)
+Container for Qt5/QML applications with Pistache C++ REST framework and Python 3.
 
-So far there are no Debian packages for libpistache available, this docker file
-builds it from source. Additionally python3 modules for pytest are included to
-execute integration tests for openapi REST interfaces.
+The container is built on top of:
+- `ghcr.io/truschival/devlinuxqtquick2:latest`
+- `ghcr.io/truschival/devlinuxbase:latest` (Debian Trixie)
+
+In Debian Trixie, `libpistache-dev` is installed directly from the official Debian package repositories.
+A pre-configured Python 3 virtual environment is provided at `/home/builduser/.venv` and enabled in `PATH`, allowing `pip` package installation without system package conflicts (PEP 668).

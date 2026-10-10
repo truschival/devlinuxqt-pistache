@@ -1,47 +1,37 @@
-FROM ghcr.io/truschival/devlinuxqtquick2:v11.6
-MAINTAINER Thomas Ruschival <t.ruschival@gmail.com>
+FROM ghcr.io/truschival/devlinuxqtquick2:latest
+LABEL maintainer="Thomas Ruschival <t.ruschival@gmail.com>" \
+      org.opencontainers.image.source="https://github.com/truschival/devlinuxqt-pistache"
 
-# Setup language environment and encoding
-ENV LC_ALL C.UTF-8
-ENV LANG C.UTF-8
-ENV PISTACHE_COMMIT ce251dfe8cd551380466f75bce79f3fdea5983f7
+ENV LC_ALL=C.UTF-8 \
+    LANG=C.UTF-8 \
+    DEBIAN_FRONTEND=noninteractive
 
-# Install stuff as root
 USER root
 
-# packages for pytest setup
-# pistache builds better with meson in recent releases
-RUN apt-get update && apt-get install -y \
-    meson \
-    python3-certifi  \
-    python3-dateutil  \
-    python3-git \
-    python3-pip \
-    python3-pytest \
-    python3-pytest-cov \
-    python3-pytest-runner \
-    python3-pytest-timeout \
-    python3-requests \
-    python3-setuptools \
-    python3-six  \
-    python3-urllib3  \
-    python3-pytest-runner
+# In Debian Trixie, libpistache-dev is available directly from Debian repositories
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+        libpistache-dev \
+        python3 \
+        python3-pip \
+        python3-venv && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Build and install pistache - we don't have a Debian package :(
-RUN mkdir -p pistache && cd pistache; \
-    git clone https://github.com/oktal/pistache.git pistache_src ;\
-    cd pistache_src; \
-	git checkout $PISTACHE_COMMIT; \
-    meson setup build \
-      --buildtype=release \
-      -DPISTACHE_USE_SSL=true \
-      -DPISTACHE_BUILD_EXAMPLES=false \
-      -DPISTACHE_BUILD_TESTS=false \
-      -DPISTACHE_BUILD_DOCS=false;\
-    meson compile -C build;\
-    meson install -C build;\
-    ldconfig
-
-# back to normal user
+# Switch to builduser and prepare Python virtual environment
 USER builduser
 WORKDIR /home/builduser
+
+# Create a virtual environment for builduser so pip installs work cleanly without PEP 668 errors
+RUN python3 -m venv /home/builduser/.venv && \
+    /home/builduser/.venv/bin/pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    /home/builduser/.venv/bin/pip install --no-cache-dir \
+        pytest \
+        pytest-cov \
+        requests \
+        GitPython
+
+# Ensure the virtual environment is in PATH for all subsequent commands
+ENV PATH="/home/builduser/.venv/bin:$PATH" \
+    VIRTUAL_ENV="/home/builduser/.venv"
