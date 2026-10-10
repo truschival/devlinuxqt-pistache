@@ -1,5 +1,6 @@
 FROM ghcr.io/truschival/devlinuxqtquick2:latest
-LABEL maintainer="Thomas Ruschival <t.ruschival@gmail.com>"
+LABEL maintainer="Thomas Ruschival <t.ruschival@gmail.com>" \
+      org.opencontainers.image.source="https://github.com/truschival/devlinuxqt-pistache"
 
 ENV LC_ALL=C.UTF-8 \
     LANG=C.UTF-8 \
