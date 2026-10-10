@@ -9,6 +9,7 @@ USER root
 
 # In Debian Trixie, libpistache-dev is available directly from Debian repositories
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         libpistache-dev \
         python3 \
